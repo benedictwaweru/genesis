@@ -1,5 +1,5 @@
-import { type Cookies } from 'react-cookie';
 import { type StorageSchema } from '@/schemas/storageSchema';
+import { type Cookies } from 'react-cookie';
 
 type CookieOptions = {
   path?: string;
@@ -11,88 +11,72 @@ type CookieOptions = {
 };
 
 export class StorageService {
-  private cookies: Cookies;
-  private setCookie: (
-    name: string,
-    value: string,
-    options?: CookieOptions,
-  ) => void;
-  private removeCookie: (name: string, options?: { path?: string }) => void;
-
-  constructor(
-    cookies: Cookies,
-    setCookie: (name: string, value: string, options?: CookieOptions) => void,
-    removeCookie: (name: string, options?: { path?: string }) => void,
-  ) {
-    this.cookies = cookies;
-    this.setCookie = setCookie;
-    this.removeCookie = removeCookie;
-  }
-
-  setLocal<K extends keyof StorageSchema['local']>(
+  static setLocal<K extends keyof StorageSchema['local']>(
     key: K,
     value: StorageSchema['local'][K],
   ): void {
     localStorage.setItem(key as string, JSON.stringify(value));
   }
 
-  getLocal<K extends keyof StorageSchema['local']>(
+  static getLocal<K extends keyof StorageSchema['local']>(
     key: K,
   ): StorageSchema['local'][K] | null {
     const item = localStorage.getItem(key as string);
     return item ? (JSON.parse(item) as StorageSchema['local'][K]) : null;
   }
 
-  removeLocal(key: keyof StorageSchema['local']): void {
+  static removeLocal(key: keyof StorageSchema['local']): void {
     localStorage.removeItem(key as string);
   }
 
-  clearLocal(): void {
+  static clearLocal(): void {
     localStorage.clear();
   }
 
-  setSession<K extends keyof StorageSchema['session']>(
+  static setSession<K extends keyof StorageSchema['session']>(
     key: K,
     value: StorageSchema['session'][K],
   ): void {
     sessionStorage.setItem(key as string, JSON.stringify(value));
   }
 
-  getSession<K extends keyof StorageSchema['session']>(
+  static getSession<K extends keyof StorageSchema['session']>(
     key: K,
   ): StorageSchema['session'][K] | null {
     const item = sessionStorage.getItem(key as string);
     return item ? (JSON.parse(item) as StorageSchema['session'][K]) : null;
   }
 
-  removeSession(key: keyof StorageSchema['session']): void {
+  static removeSession(key: keyof StorageSchema['session']): void {
     sessionStorage.removeItem(key as string);
   }
 
-  clearSession(): void {
+  static clearSession(): void {
     sessionStorage.clear();
   }
 
-  // ================= Cookies =================
-  setCookieItem<K extends keyof StorageSchema['cookie']>(
+  static setCookieItem<K extends keyof StorageSchema['cookie']>(
+    cookies: Cookies,
     key: K,
     value: StorageSchema['cookie'][K],
     options?: CookieOptions,
   ): void {
-    this.setCookie(key as string, JSON.stringify(value), options);
+    cookies.set(key as string, JSON.stringify(value), options);
   }
 
-  getCookie<K extends keyof StorageSchema['cookie']>(
+  static getCookieItem<K extends keyof StorageSchema['cookie']>(
+    cookies: Cookies,
     key: K,
   ): StorageSchema['cookie'][K] | null {
-    const item = this.cookies.get(key as string);
+    const item = cookies.get(key as string);
     return item ? (JSON.parse(item) as StorageSchema['cookie'][K]) : null;
   }
 
-  removeCookieItem(
+  static removeCookieItem(
+    cookies: Cookies,
     key: keyof StorageSchema['cookie'],
     options?: { path?: string },
   ): void {
-    this.removeCookie(key as string, options);
+    cookies.remove(key as string, options);
   }
 }

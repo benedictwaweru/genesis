@@ -4,3 +4,9 @@ node_modules/
 ### Compiled Output ###
 dist/
 build/
+bin/
+
+routeTree.gen.ts
+
+### Version Control ###
+.git/

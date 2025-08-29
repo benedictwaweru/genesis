@@ -3,5 +3,25 @@
   "tabWidth": 2,
   "singleQuote": true,
 
-  "plugins": ["prettier-plugin-java"]
+  "plugins": [
+    "prettier-plugin-java",
+    "prettier-plugin-tailwindcss", 
+    "@trivago/prettier-plugin-sort-imports",
+    "@prettier/plugin-php"
+  ],
+  "importOrder": [
+    "^react$",
+    "<THIRD_PARTY_MODULES>",
+    "^@/components/(.*)$",
+    "^@/hooks/(.*)$",
+    "^@/lib/(.*)$",
+    "^@/providers/(.*)$",
+    "^@/routes/(.*)$",
+    "^@/schemas/(.*)$",
+    "^@/services/(.*)$",
+    "^@/types/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }
