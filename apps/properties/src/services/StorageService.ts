@@ -1,5 +1,5 @@
-import { type Cookies } from 'react-cookie';
 import { type StorageSchema } from '@/schemas/storageSchema';
+import { type Cookies } from 'react-cookie';
 
 type CookieOptions = {
   path?: string;

@@ -1,21 +1,51 @@
 'use client';
 
-import { createFileRoute } from '@tanstack/react-router';
-
+import { useApiMutation } from '@/hooks/useFetch';
 import { cn } from '@/lib/utils';
+import { type TSignupFormSchema, signupFormSchema } from '@/schemas/formSchema';
+import { useForm } from '@tanstack/react-form';
+import { Link, createFileRoute } from '@tanstack/react-router';
+import { LoaderCircle } from 'lucide-react';
+
+import { PasswordInput } from '@/components/common/password-input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 export const Route = createFileRoute('/signup')({
-  component: SignupForm
+  component: SignupForm,
 });
 
-function SignupForm({
-  className,
-  ...props
-}: React.ComponentProps<'div'>) {
+function SignupForm({ className, ...props }: React.ComponentProps<'div'>) {
+  const { mutate, isPending } = useApiMutation<
+    { message: string },
+    TSignupFormSchema
+  >('POST', `${import.meta.env.VITE_SPRING_BASE_URL}/login`, {
+    onSuccess: (data) => {
+      console.log(`${data}`);
+    },
+
+    onError: (data) => {
+      console.error(`Failed: ${data}`);
+    },
+  });
+
+  const { Field, handleSubmit } = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    validators: {
+      onChange: signupFormSchema,
+      onSubmit: signupFormSchema,
+    },
+    onSubmit: ({ value }) => {
+      mutate(value);
+    },
+  });
+
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm md:max-w-3xl">
@@ -29,37 +59,133 @@ function SignupForm({
                   className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
                 />
               </div>
-              <form className="p-6 md:p-8">
+              <form
+                className="p-6 md:p-8"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleSubmit();
+                }}
+              >
                 <div className="flex flex-col gap-6">
                   <div className="flex flex-col items-center text-center">
                     <h1 className="text-2xl font-bold">Welcome</h1>
                     <p className="text-muted-foreground text-balance">
-                      Create an account
+                      Create your account
                     </p>
                   </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="m@example.com"
-                      required
-                    />
-                  </div>
-                  <div className="grid gap-3">
-                    <div className="flex items-center">
-                      <Label htmlFor="password">Password</Label>
-                      <a
-                        href="#"
-                        className="ml-auto text-sm underline-offset-2 hover:underline"
-                      >
-                        Forgot your password?
-                      </a>
-                    </div>
-                    <Input id="password" type="password" required />
-                  </div>
-                  <Button type="submit" className="w-full">
-                    Login
+                  <Field
+                    name="email"
+                    validators={{
+                      onChange: signupFormSchema.shape.email,
+                    }}
+                    children={(field) => (
+                      <div className="grid gap-3">
+                        <Label className="text-xs" htmlFor={field.name}>
+                          Email
+                        </Label>
+                        <Input
+                          id={field.name}
+                          type="email"
+                          placeholder="m@example.com"
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          onBlur={field.handleBlur}
+                          required
+                        />
+                        {field.state.meta.errors.length > 0 && (
+                          <em
+                            role="alert"
+                            className="text-red-500 not-italic text-xs"
+                          >
+                            {field.state.meta.errors
+                              .map((err) =>
+                                typeof err === 'string'
+                                  ? err
+                                  : (err?.message ?? ''),
+                              )
+                              .join(', ')}
+                          </em>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Field
+                    name="password"
+                    validators={{
+                      onChange: signupFormSchema.shape.password,
+                    }}
+                    children={(field) => (
+                      <div className="grid gap-3">
+                        <Label className="text-xs" htmlFor={field.name}>
+                          Password
+                        </Label>
+                        <PasswordInput
+                          value={field.state.value}
+                          onChange={field.handleChange}
+                          onBlur={field.handleBlur}
+                          name={field.name}
+                        />
+                        {field.state.meta.errors.length > 0 && (
+                          <em
+                            role="alert"
+                            className="text-red-500 not-italic text-xs"
+                          >
+                            {field.state.meta.errors
+                              .map((err) =>
+                                typeof err === 'string'
+                                  ? err
+                                  : (err?.message ?? ''),
+                              )
+                              .join(', ')}
+                          </em>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Field
+                    name="confirmPassword"
+                    validators={{
+                      onChange: signupFormSchema.shape.confirmPassword,
+                    }}
+                    children={(field) => (
+                      <div className="grid gap-3">
+                        <Label className="text-xs" htmlFor={field.name}>
+                          Confirm Password
+                        </Label>
+                        <PasswordInput
+                          value={field.state.value}
+                          onChange={field.handleChange}
+                          onBlur={field.handleBlur}
+                          name={field.name}
+                        />
+                        {field.state.meta.errors.length > 0 && (
+                          <em
+                            role="alert"
+                            className="text-red-500 not-italic text-xs"
+                          >
+                            {field.state.meta.errors
+                              .map((err) =>
+                                typeof err === 'string'
+                                  ? err
+                                  : (err?.message ?? ''),
+                              )
+                              .join(', ')}
+                          </em>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Button
+                    type="submit"
+                    className="w-full cursor-pointer"
+                    disabled={isPending}
+                  >
+                    {isPending ? (
+                      <LoaderCircle className="animate-spin h-8 w-8" />
+                    ) : (
+                      'Sign Up'
+                    )}
                   </Button>
                   <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                     <span className="bg-card text-muted-foreground relative z-10 px-2">
@@ -67,7 +193,11 @@ function SignupForm({
                     </span>
                   </div>
                   <div className="grid grid-cols-3 gap-4">
-                    <Button variant="outline" type="button" className="w-full">
+                    <Button
+                      variant="outline"
+                      type="button"
+                      className="w-full cursor-pointer"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -79,7 +209,11 @@ function SignupForm({
                       </svg>
                       <span className="sr-only">Login with Apple</span>
                     </Button>
-                    <Button variant="outline" type="button" className="w-full">
+                    <Button
+                      variant="outline"
+                      type="button"
+                      className="w-full cursor-pointer"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -91,7 +225,11 @@ function SignupForm({
                       </svg>
                       <span className="sr-only">Login with Google</span>
                     </Button>
-                    <Button variant="outline" type="button" className="w-full">
+                    <Button
+                      variant="outline"
+                      type="button"
+                      className="w-full cursor-pointer"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -105,9 +243,12 @@ function SignupForm({
                     </Button>
                   </div>
                   <div className="text-center text-sm">
-                    Don&apos;t have an account?{' '}
-                    <a href="#" className="underline underline-offset-4">
-                      Sign up
+                    Already have an account?{' '}
+                    <a
+                      href="/login"
+                      className="underline underline-offset-4 hover:text-primary"
+                    >
+                      Log in
                     </a>
                   </div>
                 </div>
@@ -116,7 +257,8 @@ function SignupForm({
           </Card>
           <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
             By clicking continue, you agree to our{' '}
-            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            <Link to="/terms-of-service">Terms of Service</Link> and{' '}
+            <Link to="/privacy-policy">Privacy Policy</Link>.
           </div>
         </div>
       </div>

@@ -1,7 +1,8 @@
 import { type FC, type ReactNode } from 'react';
-import { Cookies, useCookies } from 'react-cookie';
+
 import { StorageContext } from '@/hooks/useStorage';
 import { StorageService } from '@/services/StorageService';
+import { Cookies, useCookies } from 'react-cookie';
 
 export const StorageProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [cookieObj, setCookie, removeCookie] = useCookies();
@@ -13,4 +14,4 @@ export const StorageProvider: FC<{ children: ReactNode }> = ({ children }) => {
       {children}
     </StorageContext.Provider>
   );
-}
+};

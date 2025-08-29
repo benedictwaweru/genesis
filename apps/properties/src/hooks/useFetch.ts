@@ -1,14 +1,19 @@
 /*eslint eqeqeq: ["error", "always"]*/
-import { useMutation, useQuery, type UseMutationOptions, type UseQueryOptions } from '@tanstack/react-query';
+import {
+  type UseMutationOptions,
+  type UseQueryOptions,
+  useMutation,
+  useQuery,
+} from '@tanstack/react-query';
 import axios, { type AxiosError, type AxiosRequestConfig } from 'axios';
 
-type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 const apiRequest = async <T>(
   method: HttpMethod,
   url: string,
   data?: unknown,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<T> => {
   try {
     const methodMap = {
@@ -35,30 +40,31 @@ const apiRequest = async <T>(
     });
     throw axiosError.response?.data ?? axiosError.message;
   }
-}
+};
 
 export function useApiQuery<T>(
   queryKey: string[],
   url: string,
   config?: AxiosRequestConfig,
-  options?: Omit<UseQueryOptions<T>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<T>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery<T>({
     queryKey,
-    queryFn: () => apiRequest<T>("GET", url, undefined, config),
+    queryFn: () => apiRequest<T>('GET', url, undefined, config),
     ...options,
   });
 }
 
 export function useApiMutation<
   TResponse,
-  TVariables extends Record<string, unknown> = Record<string, unknown>
+  TVariables extends Record<string, unknown> = Record<string, unknown>,
 >(
   method: HttpMethod,
   url: string,
-  options?: UseMutationOptions<TResponse, Error, TVariables>
+  options?: UseMutationOptions<TResponse, Error, TVariables>,
 ) {
-  if (method === "GET") throw new Error(`GET methods aren't used with mutation functions`);
+  if (method === 'GET')
+    throw new Error(`GET methods aren't used with mutation functions`);
 
   return useMutation<TResponse, Error, TVariables>({
     mutationFn: (data: TVariables) => apiRequest<TResponse>(method, url, data),

@@ -1,9 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/notfound')({
-  component: RouteComponent,
-})
+  component: Notfound,
+});
 
-function RouteComponent() {
-  return <div>Hello "/notfound"!</div>
+function Notfound() {
+  return <div>Hello "/notfound"!</div>;
 }

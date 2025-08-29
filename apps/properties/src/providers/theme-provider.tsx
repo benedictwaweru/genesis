@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import {
-  ThemeProviderContext,
   type Theme,
+  ThemeProviderContext,
   type ThemeProviderProps,
 } from '@/hooks/useTheme';
 
@@ -13,7 +13,7 @@ export function ThemeProvider({
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) ?? defaultTheme
+    () => (localStorage.getItem(storageKey) as Theme) ?? defaultTheme,
   );
 
   useEffect(() => {

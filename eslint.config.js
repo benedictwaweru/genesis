@@ -20,15 +20,21 @@ export default [
     },
     rules: {
       'no-console': 'warn',
-      'eqeqeq': ['error', 'always'],
+      eqeqeq: ['error', 'always'],
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-      '@typescript-eslint/consistent-type-imports': ['warn', { prefer: 'type-imports' }],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_' },
+      ],
+      '@typescript-eslint/consistent-type-imports': [
+        'warn',
+        { prefer: 'type-imports' },
+      ],
       '@typescript-eslint/no-non-null-assertion': 'warn',
       '@typescript-eslint/prefer-nullish-coalescing': 'warn',
       '@typescript-eslint/prefer-optional-chain': 'warn',
 
-      'react-refresh/only-export-components': 'off'
+      'react-refresh/only-export-components': 'off',
     },
   },
 ];
